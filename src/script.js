@@ -11,11 +11,14 @@ import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js'
 // Debug
 // const gui = new dat.GUI()
 
+
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
 
 // Scene
 const scene = new THREE.Scene()
+
+
 
 // Axes helper
 // const axesHelper = new THREE.AxesHelper()
@@ -27,11 +30,13 @@ const scene = new THREE.Scene()
 const textureLoader = new THREE.TextureLoader()
 const matcapTexture = textureLoader.load('/textures/matcaps/8.png')
 const matcapTextureText = textureLoader.load('/textures/matcaps/4.png')
+const matcapCuadros = textureLoader.load('/textures/matcaps/5.png')
 
 
 /**
  * Fonts
  */
+
 
 const fontLoader = new FontLoader()
 fontLoader.load(
@@ -53,6 +58,8 @@ fontLoader.load(
         )
         textGeometry.center()
 
+        
+        
 
         // textGeometry.computeBoundingBox()
         // textGeometry.translate(
@@ -68,10 +75,10 @@ fontLoader.load(
         //     - (textGeometry.boundingBox.max.z - 0.03) * 0.5  // Subtract bevel thickness
         // )
 
-        const material = new THREE.MeshMatcapMaterial()
-        material.matcap = matcapTexture
+        const material = new THREE.MeshNormalMaterial()
 
-        const materialText = new THREE.MeshMatcapMaterial({matcap: matcapTextureText})
+        const materialText = new THREE.MeshNormalMaterial()
+        materialText.flatShading= false
         const text = new THREE.Mesh(textGeometry, materialText)
         scene.add(text)
 
@@ -89,7 +96,7 @@ fontLoader.load(
             donut.rotation.x = Math.random() * Math.PI
             donut.rotation.y = Math.random() * Math.PI
 
-            const scale = Math.random()
+            const scale = Math.random() * 0.4
             donut.scale.set(scale, scale, scale)
 
 
@@ -98,9 +105,35 @@ fontLoader.load(
         }
 
 
+        const materialCuadros = new THREE.MeshNormalMaterial()
+        const cuadrosGeometry = new THREE.BoxGeometry()
+
+
+        for(let i = 0; i<1000; i++) {
+            const cuadros = new THREE.Mesh(cuadrosGeometry, materialCuadros)
+
+            cuadros.position.x = (Math.random() - 0.5) * 20 
+            cuadros.position.y = (Math.random() - 0.5) * 20 
+            cuadros.position.z = (Math.random() - 0.5) * 20 
+
+            cuadros.rotation.x = Math.random() * Math.PI
+            cuadros.rotation.y = Math.random() * Math.PI
+
+            const scale = Math.random() * 0.3
+            cuadros.scale.set(scale, scale, scale)
+
+
+
+            scene.add(cuadros)
+        }
+
+
 
     }
 )
+
+
+
 
 
 /**
@@ -131,10 +164,15 @@ window.addEventListener('resize', () =>
  */
 // Base camera
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
-camera.position.x = 1
-camera.position.y = 1
-camera.position.z = 2
+camera.position.x = 0.65
+camera.position.y = -0.55
+camera.position.z = 1.4
 scene.add(camera)
+
+// gui.add(camera.position, 'x').min(-10).max(10).step(0.05)
+// gui.add(camera.position, 'y').min(-10).max(10).step(0.05)
+// gui.add(camera.position, 'z').min(-10).max(10).step(0.05)
+
 
 // Controls
 const controls = new OrbitControls(camera, canvas)
@@ -150,13 +188,21 @@ renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
 
+const clock = new THREE.Clock()
+
+
 const tick = () =>
 {
+    const elapsedTime = clock.getElapsedTime()
+
+
 
     // Update controls
     controls.update()
 
-    
+    scene.rotation.z = elapsedTime * 0.02
+    scene.rotation.y = elapsedTime * 0.02
+    scene.rotation.x = elapsedTime * 0.02
 
     // Render
     renderer.render(scene, camera)
