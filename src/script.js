@@ -9,7 +9,7 @@ import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js'
  * Base
  */
 // Debug
-const gui = new dat.GUI()
+// const gui = new dat.GUI()
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
@@ -18,14 +18,15 @@ const canvas = document.querySelector('canvas.webgl')
 const scene = new THREE.Scene()
 
 // Axes helper
-const axesHelper = new THREE.AxesHelper()
-scene.add(axesHelper)
+// const axesHelper = new THREE.AxesHelper()
+// scene.add(axesHelper)
 
 /**
  * Textures
  */
 const textureLoader = new THREE.TextureLoader()
 const matcapTexture = textureLoader.load('/textures/matcaps/8.png')
+const matcapTextureText = textureLoader.load('/textures/matcaps/4.png')
 
 
 /**
@@ -37,7 +38,7 @@ fontLoader.load(
     '/fonts/helvetiker_regular.typeface.json',
     (font) => {
         const textGeometry = new TextGeometry(
-            'Hello Three.js',
+            'Luis',
             {
                 font,
                 size: 0.5,
@@ -69,19 +70,21 @@ fontLoader.load(
 
         const material = new THREE.MeshMatcapMaterial()
         material.matcap = matcapTexture
-        const text = new THREE.Mesh(textGeometry, material)
+
+        const materialText = new THREE.MeshMatcapMaterial({matcap: matcapTextureText})
+        const text = new THREE.Mesh(textGeometry, materialText)
         scene.add(text)
 
 
         const donutGeometry = new THREE.TorusGeometry(0.3, 0.2, 20, 45)
 
 
-        for(let i = 0; i<300; i++) {
+        for(let i = 0; i<1000; i++) {
             const donut = new THREE.Mesh(donutGeometry, material)
 
-            donut.position.x = (Math.random() - 0.5) * 10 
-            donut.position.y = (Math.random() - 0.5) * 10 
-            donut.position.z = (Math.random() - 0.5) * 10 
+            donut.position.x = (Math.random() - 0.5) * 20 
+            donut.position.y = (Math.random() - 0.5) * 20 
+            donut.position.z = (Math.random() - 0.5) * 20 
 
             donut.rotation.x = Math.random() * Math.PI
             donut.rotation.y = Math.random() * Math.PI
